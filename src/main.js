@@ -4,6 +4,8 @@ import './style.css'
 const sourceUrl =
   'https://cubing-tw.net/event/2025TaiwanChampionship/competitors'
 const proxyUrl = '/api/competitors'
+const eventSourceUrl = 'https://cubing-tw.net/event/2025TaiwanChampionship/event'
+const eventProxyUrl = '/api/events'
 
 const app = document.querySelector('#app')
 
@@ -36,10 +38,25 @@ const buildLayout = () => {
         <h1 class="text-3xl font-semibold text-slate-900">Competitors</h1>
         <p class="text-slate-600">Fetched live from <a class="underline decoration-dotted underline-offset-2" href="${sourceUrl}" target="_blank" rel="noreferrer">${sourceUrl}</a> via axios.</p>
       </div>
-      <button id="refresh" class="btn-primary self-start">Refresh</button>
+      <div class="flex gap-2 flex-wrap">
+        <button id="list-ranking" class="btn-secondary">List Ranking</button>
+        <button id="refresh" class="btn-primary">Refresh Competitors</button>
+      </div>
     </header>
-    <section class="card p-6 space-y-4">
-      <div id="status" class="status text-slate-500">Waiting to fetch…</div>
+    <section class="card p-6 space-y-5">
+      <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div class="space-y-1">
+          <label for="event-select" class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Event</label>
+          <select id="event-select" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+            <option>Loading events…</option>
+          </select>
+          <p id="event-status" class="text-xs text-slate-500">Fetching events…</p>
+        </div>
+        <div class="flex flex-col gap-2 text-sm text-slate-600 sm:text-right">
+          <span>Source: <a class="underline decoration-dotted underline-offset-2" href="${eventSourceUrl}" target="_blank" rel="noreferrer">${eventSourceUrl}</a></span>
+        </div>
+      </div>
+      <div id="status" class="status text-slate-500">Waiting to fetch competitors…</div>
       <div class="overflow-x-auto rounded-xl border border-slate-100">
         <table id="table" class="min-w-full divide-y divide-slate-200 bg-white text-sm"></table>
       </div>
@@ -159,9 +176,72 @@ const attachEvents = () => {
   refreshButton.addEventListener('click', fetchCompetitors)
 }
 
+const parseEvents = (htmlText) => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(htmlText, 'text/html')
+  const firstTbody = doc.querySelector('table tbody')
+  if (!firstTbody) return []
+  const rows = Array.from(firstTbody.querySelectorAll('tr'))
+  return rows
+    .map((row) => row.querySelector('td.text-start')?.textContent.trim())
+    .filter((name) => name && !/base fee/i.test(name))
+}
+
+const setEventStatus = (text, tone = 'muted') => {
+  const el = document.querySelector('#event-status')
+  if (!el) return
+  const toneClass = {
+    muted: 'text-slate-500',
+    info: 'text-blue-700',
+    success: 'text-emerald-700',
+    error: 'text-rose-700',
+  }
+  el.textContent = text
+  el.className = `text-xs ${toneClass[tone] || toneClass.muted}`
+}
+
+const renderEventOptions = (events) => {
+  const select = document.querySelector('#event-select')
+  if (!select) return
+  if (!events.length) {
+    select.innerHTML = `<option>No events found</option>`
+    return
+  }
+  const options = events
+    .map(
+      (event) =>
+        `<option value="${event}">${event}</option>`
+    )
+    .join('')
+  select.innerHTML = `<option disabled selected>Select an event</option>${options}`
+}
+
+const fetchEvents = async () => {
+  setEventStatus('Loading events…', 'info')
+  try {
+    const response = await axios.get(eventProxyUrl)
+    const events = parseEvents(response.data)
+    renderEventOptions(events)
+    setEventStatus(`Loaded ${events.length} events.`, 'success')
+  } catch (error) {
+    console.error(error)
+    setEventStatus('Failed to load events. Check the network or proxy settings.', 'error')
+  }
+}
+
+const attachListRanking = () => {
+  const btn = document.querySelector('#list-ranking')
+  if (!btn) return
+  btn.addEventListener('click', () => {
+    // Placeholder: user will provide behavior next.
+  })
+}
+
 const init = () => {
   buildLayout()
   attachEvents()
+  attachListRanking()
+  fetchEvents()
   fetchCompetitors()
 }
 
