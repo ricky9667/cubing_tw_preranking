@@ -1,164 +1,33 @@
-:root {
-  font-family: 'Space Grotesk', 'Segoe UI', -apple-system, BlinkMacSystemFont,
-    'Helvetica Neue', Arial, sans-serif;
-  line-height: 1.6;
-  font-weight: 400;
-  color: #0d1b2a;
-  background-color: #f4f6fb;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap');
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-a {
-  color: inherit;
-}
-
-#app {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 3rem;
-}
-
-h1 {
-  margin: 0.25rem 0;
-  font-size: 2.25rem;
-  letter-spacing: -0.02em;
-}
-
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.page__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.8rem;
-  color: #5c6b8a;
-  margin: 0;
-}
-
-.lead {
-  margin: 0.25rem 0 0;
-  color: #47536b;
-}
-
-.panel {
-  background: #fff;
-  border: 1px solid #e3e8f2;
-  border-radius: 16px;
-  box-shadow: 0 15px 30px rgba(13, 27, 42, 0.06);
-  padding: 1.5rem;
-}
-
-.button {
-  border: none;
-  background: linear-gradient(135deg, #233dff, #7f5af0);
-  color: #fff;
-  padding: 0.8rem 1.2rem;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 10px 20px rgba(35, 61, 255, 0.2);
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-
-.button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(35, 61, 255, 0.25);
-}
-
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
-}
-
-.table thead {
-  background: #f0f3fa;
-}
-
-.table th,
-.table td {
-  padding: 0.65rem 0.75rem;
-  border-bottom: 1px solid #e5e9f2;
-  text-align: left;
-}
-
-.table tr:hover {
-  background: #f8faff;
-}
-
-.table a {
-  color: #233dff;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.table a:hover {
-  text-decoration: underline;
-}
-
-.col-number {
-  width: 56px;
-  text-align: center;
-  color: #5c6b8a;
-}
-
-.status {
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.status--muted {
-  color: #7a869f;
-}
-
-.status--info {
-  color: #233dff;
-}
-
-.status--success {
-  color: #1a7f46;
-}
-
-.status--error {
-  color: #d84315;
-}
-
-@media (max-width: 720px) {
-  .page__header {
-    flex-direction: column;
-    align-items: flex-start;
+@layer base {
+  :root {
+    color: #0f172a;
+    background-color: #f3f6fb;
+    font-family: 'Space Grotesk', 'Segoe UI', system-ui, -apple-system,
+      'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
   }
 
-  h1 {
-    font-size: 1.8rem;
+  a {
+    color: inherit;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-900/5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 font-semibold text-white shadow-lg shadow-blue-500/25 transition hover:-translate-y-0.5 hover:shadow-blue-500/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
+  }
+
+  .status {
+    @apply font-semibold text-sm;
   }
 }

@@ -29,22 +29,22 @@ const eventCodes = [
 
 const buildLayout = () => {
   app.innerHTML = `
-    <main class="page">
-      <header class="page__header">
-        <div>
-          <p class="eyebrow">Taiwan Championship 2025</p>
-          <h1>Competitors</h1>
-          <p class="lead">Fetched live from <a href="${sourceUrl}" target="_blank" rel="noreferrer">${sourceUrl}</a> via axios.</p>
-        </div>
-        <button id="refresh" class="button">Refresh</button>
-      </header>
-      <section class="panel">
-        <div id="status" class="status status--muted">Waiting to fetch…</div>
-        <div class="table-wrap">
-          <table id="table" class="table"></table>
-        </div>
-      </section>
-    </main>
+  <main class="space-y-6 max-w-5xl mx-auto p-6">
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div class="space-y-1">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Taiwan Championship 2025</p>
+        <h1 class="text-3xl font-semibold text-slate-900">Competitors</h1>
+        <p class="text-slate-600">Fetched live from <a class="underline decoration-dotted underline-offset-2" href="${sourceUrl}" target="_blank" rel="noreferrer">${sourceUrl}</a> via axios.</p>
+      </div>
+      <button id="refresh" class="btn-primary self-start">Refresh</button>
+    </header>
+    <section class="card p-6 space-y-4">
+      <div id="status" class="status text-slate-500">Waiting to fetch…</div>
+      <div class="overflow-x-auto rounded-xl border border-slate-100">
+        <table id="table" class="min-w-full divide-y divide-slate-200 bg-white text-sm"></table>
+      </div>
+    </section>
+  </main>
   `
 }
 
@@ -91,14 +91,14 @@ const renderTable = (rows) => {
   }
 
   const header = `
-    <thead>
+    <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
       <tr>
-        <th class="col-number">#</th>
-        <th>Name</th>
-        <th>WCA ID</th>
-        <th>Country</th>
-        <th>Gender</th>
-        <th>Events</th>
+        <th class="px-3 py-2 text-center">#</th>
+        <th class="px-3 py-2 text-left">Name</th>
+        <th class="px-3 py-2 text-left">WCA ID</th>
+        <th class="px-3 py-2 text-left">Country</th>
+        <th class="px-3 py-2 text-left">Gender</th>
+        <th class="px-3 py-2 text-left">Events</th>
       </tr>
     </thead>
   `
@@ -107,12 +107,18 @@ const renderTable = (rows) => {
     .map(
       (row, index) => `
       <tr>
-        <td class="col-number">${index + 1}</td>
-        <td>${row.name || '-'}</td>
-        <td>${row.wcaId ? `<a href="https://www.worldcubeassociation.org/persons/${row.wcaId}" target="_blank" rel="noreferrer">${row.wcaId}</a>` : '-'}</td>
-        <td>${row.country || '-'}</td>
-        <td>${row.gender || '-'}</td>
-        <td>${row.events.length ? row.events.join(', ') : '—'}</td>
+        <td class="px-3 py-2 text-center text-slate-500">${index + 1}</td>
+        <td class="px-3 py-2 font-semibold text-slate-900">${row.name || '-'}</td>
+        <td class="px-3 py-2">
+          ${
+            row.wcaId
+              ? `<a class="text-blue-700 font-semibold hover:underline" href="https://www.worldcubeassociation.org/persons/${row.wcaId}" target="_blank" rel="noreferrer">${row.wcaId}</a>`
+              : '-'
+          }
+        </td>
+        <td class="px-3 py-2 text-slate-700">${row.country || '-'}</td>
+        <td class="px-3 py-2 text-slate-700">${row.gender || '-'}</td>
+        <td class="px-3 py-2 text-slate-700">${row.events.length ? row.events.join(', ') : '—'}</td>
       </tr>
     `
     )
@@ -125,7 +131,13 @@ const setStatus = (text, tone = 'muted') => {
   const statusEl = document.querySelector('#status')
   if (!statusEl) return
   statusEl.textContent = text
-  statusEl.className = `status status--${tone}`
+  const toneClass = {
+    muted: 'text-slate-500',
+    info: 'text-blue-700',
+    success: 'text-emerald-700',
+    error: 'text-rose-700',
+  }
+  statusEl.className = `status ${toneClass[tone] || toneClass.muted}`
 }
 
 const fetchCompetitors = async () => {
