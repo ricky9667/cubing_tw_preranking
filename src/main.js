@@ -5,6 +5,7 @@ const competitorsProxyUrl = '/api/competitors'
 const eventsProxyUrl = '/api/events'
 const competitorsUrl = competitorsProxyUrl
 const eventsUrl = eventsProxyUrl
+const themeStorageKey = 'cubing-tw-theme'
 
 const app = document.querySelector('#app')
 
@@ -60,7 +61,10 @@ const buildLayout = () => {
         <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Cubing TW Pre-Ranking</p>
         <h1 class="text-3xl font-semibold text-slate-900">Taiwan Championship 2025</h1>
       </div>
-      <button id="refresh" class="btn-primary self-start">Reload Competitors</button>
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" class="btn-secondary" type="button">🌙 Theme</button>
+        <button id="refresh" class="btn-primary self-start">Reload Competitors</button>
+      </div>
     </header>
     <section class="card p-6 space-y-5">
       <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
@@ -381,12 +385,57 @@ const attachListRanking = () => {
   btn.addEventListener('click', loadRanking)
 }
 
+const resolveSystemTheme = () =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+
+const applyTheme = (mode) => {
+  const root = document.documentElement
+  if (mode === 'dark') {
+    root.dataset.theme = 'dark'
+  } else if (mode === 'light') {
+    root.dataset.theme = 'light'
+  } else {
+    root.removeAttribute('data-theme')
+  }
+
+  const resolved = mode === 'system' ? resolveSystemTheme() : mode
+  const toggle = document.querySelector('#theme-toggle')
+  if (toggle) {
+    const isDark = resolved === 'dark'
+    toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark'
+    toggle.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} mode`)
+  }
+}
+
+const initTheme = () => {
+  const stored = localStorage.getItem(themeStorageKey) || 'system'
+  applyTheme(stored)
+
+  const toggle = document.querySelector('#theme-toggle')
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const current = localStorage.getItem(themeStorageKey) || 'system'
+      const resolved = current === 'system' ? resolveSystemTheme() : current
+      const next = resolved === 'dark' ? 'light' : 'dark'
+      localStorage.setItem(themeStorageKey, next)
+      applyTheme(next)
+    })
+  }
+
+  const media = window.matchMedia('(prefers-color-scheme: dark)')
+  media.addEventListener('change', () => {
+    const storedPref = localStorage.getItem(themeStorageKey) || 'system'
+    if (storedPref === 'system') applyTheme('system')
+  })
+}
+
 const init = () => {
   buildLayout()
   attachEvents()
   attachListRanking()
   fetchEvents()
   fetchCompetitors()
+  initTheme()
 }
 
 init()
