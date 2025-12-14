@@ -17,7 +17,7 @@ app.use(
     target: upstream,
     changeOrigin: true,
     secure: true,
-    pathRewrite: (pathStr) =>
+    pathRewrite: (pathStr, _) =>
       pathStr
         .replace(
           /^\/api\/competitors/,
@@ -32,8 +32,9 @@ app.use(
 
 const distPath = path.join(__dirname, 'dist')
 app.use(express.static(distPath))
-app.get(/.*/, (_, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
+  console.log(req)
 })
 
 app.listen(port, () => {
