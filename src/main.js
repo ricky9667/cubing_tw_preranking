@@ -34,26 +34,22 @@ const buildLayout = () => {
   <main class="space-y-6 max-w-5xl mx-auto p-6">
     <header class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-1">
-        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Taiwan Championship 2025</p>
-        <h1 class="text-3xl font-semibold text-slate-900">Competitors</h1>
-        <p class="text-slate-600">Fetched live from <a class="underline decoration-dotted underline-offset-2" href="${sourceUrl}" target="_blank" rel="noreferrer">${sourceUrl}</a> via axios.</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Cubing TW Pre-Ranking</p>
+        <h1 class="text-3xl font-semibold text-slate-900">Taiwan Championship 2025</h1>
       </div>
-      <div class="flex gap-2 flex-wrap">
-        <button id="list-ranking" class="btn-secondary">List Ranking</button>
-        <button id="refresh" class="btn-primary">Refresh Competitors</button>
-      </div>
+      <button id="refresh" class="btn-primary self-start">Reload Competitors</button>
     </header>
     <section class="card p-6 space-y-5">
       <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
         <div class="space-y-1">
           <label for="event-select" class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Event</label>
-          <select id="event-select" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
-            <option>Loading events…</option>
-          </select>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+            <select id="event-select" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+              <option>Loading events…</option>
+            </select>
+            <button id="list-ranking" class="btn-secondary whitespace-nowrap">Load Ranking</button>
+          </div>
           <p id="event-status" class="text-xs text-slate-500">Fetching events…</p>
-        </div>
-        <div class="flex flex-col gap-2 text-sm text-slate-600 sm:text-right">
-          <span>Source: <a class="underline decoration-dotted underline-offset-2" href="${eventSourceUrl}" target="_blank" rel="noreferrer">${eventSourceUrl}</a></span>
         </div>
       </div>
       <div id="status" class="status text-slate-500">Waiting to fetch competitors…</div>
