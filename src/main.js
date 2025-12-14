@@ -161,8 +161,12 @@ const renderTable = (rows) => {
     const cs = value
     const totalSeconds = cs / 100
     const minutes = Math.floor(totalSeconds / 60)
-    const seconds = (totalSeconds % 60).toFixed(2).padStart(5, '0')
-    return minutes ? `${minutes}:${seconds}` : seconds
+    const seconds = (totalSeconds % 60).toFixed(2)
+    if (minutes) {
+      const paddedSeconds = seconds.padStart(5, '0')
+      return `${minutes}:${paddedSeconds}`
+    }
+    return seconds
   }
 
   const body = sortedRows
