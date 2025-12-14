@@ -1,11 +1,14 @@
 import axios from 'axios'
 import './style.css'
 
-const sourceUrl =
-  'https://cubing-tw.net/event/2025TaiwanChampionship/competitors'
-const proxyUrl = '/api/competitors'
-const eventSourceUrl = 'https://cubing-tw.net/event/2025TaiwanChampionship/event'
-const eventProxyUrl = '/api/events'
+const baseUrl = 'https://cubing-tw.net/event/2025TaiwanChampionship/'
+const competitorsUrl = `${baseUrl}/competitors`
+const eventsUrl = `${baseUrl}/event`
+
+// const competitorsProxyUrl = '/api/competitors'
+// const eventsProxyUrl = '/api/events'
+// const competitorsUrl = competitorsProxyUrl
+// const eventsUrl = eventsProxyUrl
 
 const app = document.querySelector('#app')
 
@@ -215,7 +218,7 @@ const setStatus = (text, tone = 'muted') => {
 const fetchCompetitors = async () => {
   setStatus('Loading competitors…', 'info')
   try {
-    const response = await axios.get(proxyUrl)
+    const response = await axios.get(competitorsUrl)
     const competitors = parseCompetitors(response.data)
     competitorsCache = competitors
     rankingMap = new Map()
@@ -279,7 +282,7 @@ const renderEventOptions = (events) => {
 const fetchEvents = async () => {
   setEventStatus('Loading events…', 'info')
   try {
-    const response = await axios.get(eventProxyUrl)
+    const response = await axios.get(eventsUrl)
     const events = parseEvents(response.data)
     renderEventOptions(events)
     setEventStatus(`Loaded ${events.length} events.`, 'success')
