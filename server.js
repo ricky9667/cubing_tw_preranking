@@ -11,6 +11,14 @@ const port = process.env.PORT || 4173
 
 const upstream = 'https://cubing-tw.net'
 
+app.options('/api/{0,}', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+  res.setHeader('Access-Control-Max-Age', '86400')
+  res.status(204).end()
+})
+
 app.use(
   ['/api/competitors', '/api/events'],
   createProxyMiddleware({
