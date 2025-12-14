@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.js"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.22",
@@ -15,6 +16,8 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "axios": "^1.13.2"
+    "axios": "^1.13.2",
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^3.0.5"
   }
 }

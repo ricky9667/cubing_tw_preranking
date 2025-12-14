@@ -20,6 +20,7 @@ const proxyConfig = {
 }
 
 export default defineConfig({
+  base: './',
   server: {
     proxy: proxyConfig,
   },

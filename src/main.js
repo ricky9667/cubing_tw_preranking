@@ -1,14 +1,10 @@
 import axios from 'axios'
 import './style.css'
 
-const baseUrl = 'https://cubing-tw.net/event/2025TaiwanChampionship/'
-const competitorsUrl = `${baseUrl}/competitors`
-const eventsUrl = `${baseUrl}/event`
-
-// const competitorsProxyUrl = '/api/competitors'
-// const eventsProxyUrl = '/api/events'
-// const competitorsUrl = competitorsProxyUrl
-// const eventsUrl = eventsProxyUrl
+const competitorsProxyUrl = '/api/competitors'
+const eventsProxyUrl = '/api/events'
+const competitorsUrl = competitorsProxyUrl
+const eventsUrl = eventsProxyUrl
 
 const app = document.querySelector('#app')
 
