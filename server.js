@@ -19,22 +19,69 @@ app.options('/api/{0,}', (req, res) => {
   res.status(204).end()
 })
 
+// ⭐ API Proxy - MUST come before static files and catch-all
 app.use(
-  ['/api/competitors', '/api/events'],
+  '/api',
   createProxyMiddleware({
     target: upstream,
     changeOrigin: true,
     secure: true,
-    pathRewrite: (pathStr, _) =>
-      pathStr
-        .replace(
-          /^\/api\/competitors/,
+    
+    pathRewrite: (pathStr) => {
+      // Map /api/competitors -> /event/2025TaiwanChampionship/competitors
+      if (pathStr.startsWith('/competitors')) {
+        return pathStr.replace(
+          /^\/competitors/,
           '/event/2025TaiwanChampionship/competitors'
         )
-        .replace(/^\/api\/events/, '/event/2025TaiwanChampionship/event'),
-    onProxyReq: (proxyReq) => {
-      proxyReq.setHeader('Origin', upstream)
+      }
+      // Map /api/events -> /event/2025TaiwanChampionship/event
+      if (pathStr.startsWith('/events')) {
+        return pathStr.replace(
+          /^\/events/,
+          '/event/2025TaiwanChampionship/event'
+        )
+      }
+      return pathStr
     },
+    
+    onProxyReq: (proxyReq, req, res) => {
+      // Make the upstream server think the request came from its own domain
+      proxyReq.setHeader('Origin', upstream)
+      proxyReq.setHeader('Referer', upstream)
+      proxyReq.removeHeader('Host')
+      
+      console.log('🔵 Proxying:', req.method, req.path, '→', proxyReq.path)
+    },
+    
+    // ⭐ CRITICAL: Add CORS headers to response
+    onProxyRes: (proxyRes, req, res) => {
+      proxyRes.headers['access-control-allow-origin'] = '*'
+      proxyRes.headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+      proxyRes.headers['access-control-allow-headers'] = 'Content-Type, Authorization, X-Requested-With'
+      proxyRes.headers['access-control-allow-credentials'] = 'true'
+      
+      // Remove potentially problematic headers
+      delete proxyRes.headers['x-frame-options']
+      delete proxyRes.headers['content-security-policy']
+      
+      console.log('✅ Proxied response:', req.path, '→ Status:', proxyRes.statusCode)
+    },
+    
+    onError: (err, req, res) => {
+      console.error('❌ Proxy error:', err. message)
+      console.error('   Path:', req.path)
+      console.error('   Method:', req.method)
+      
+      res.status(502).json({
+        error: 'Bad Gateway',
+        message: 'Failed to proxy request to upstream server',
+        details: process.env.NODE_ENV === 'development' ? err.message : undefined,
+        path: req.path
+      })
+    },
+    
+    logLevel: process.env.NODE_ENV === 'development' ? 'debug' : 'warn',
   })
 )
 
