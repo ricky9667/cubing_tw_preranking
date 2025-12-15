@@ -170,10 +170,19 @@ const renderTable = (rows) => {
     return
   }
 
-  const formatTime = (value, eventCode) => {
+  const formatTime = (value, eventCode, { isAverage = false } = {}) => {
     if (!Number.isFinite(value) || value <= 0) return '—'
     if (eventCode === '333mbf') return String(value)
-    if (eventCode === '333fm') return `${(value / 100).toFixed(2)} moves`
+    if (eventCode === '333fm') {
+      if (isAverage) {
+        const moves = value >= 100 ? value / 100 : value
+        const formatted = Number.isInteger(moves)
+          ? moves.toFixed(0)
+          : moves.toFixed(2)
+        return `${formatted} moves`
+      }
+      return `${Math.round(value)} moves`
+    }
     const cs = value
     const totalSeconds = cs / 100
     const minutes = Math.floor(totalSeconds / 60)
@@ -202,7 +211,11 @@ const renderTable = (rows) => {
         <td class="px-3 py-2 text-slate-700">${row.gender || '-'}</td>
         <td class="px-3 py-2 text-slate-800 font-semibold">${
           rankingMap.has(row.wcaId)
-            ? formatTime(rankingMap.get(row.wcaId).average, currentRankingEvent)
+            ? formatTime(
+                rankingMap.get(row.wcaId).average,
+                currentRankingEvent,
+                { isAverage: true }
+              )
             : '—'
         }</td>
         <td class="px-3 py-2 text-slate-800 font-semibold">${
