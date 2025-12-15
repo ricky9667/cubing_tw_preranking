@@ -49,6 +49,8 @@ const eventCodes = [
   '333mbf',
 ]
 
+const singleFirstEvents = new Set(['333bf', '444bf', '555bf', '333mbf'])
+
 let competitorsCache = []
 let currentRankingEvent = null
 let rankingMap = new Map()
@@ -145,10 +147,20 @@ const renderTable = (rows) => {
         const rb = rankingMap.get(b.wcaId) || {}
         const avgA = Number.isFinite(ra.average) ? ra.average : Infinity
         const avgB = Number.isFinite(rb.average) ? rb.average : Infinity
-        if (avgA !== avgB) return avgA - avgB
         const bestA = Number.isFinite(ra.single) ? ra.single : Infinity
         const bestB = Number.isFinite(rb.single) ? rb.single : Infinity
-        if (bestA !== bestB) return bestA - bestB
+        const comparePairs = singleFirstEvents.has(currentRankingEvent)
+          ? [
+              [bestA, bestB],
+              [avgA, avgB],
+            ]
+          : [
+              [avgA, avgB],
+              [bestA, bestB],
+            ]
+        for (const [valA, valB] of comparePairs) {
+          if (valA !== valB) return valA - valB
+        }
         return (a.name || '').localeCompare(b.name || '')
       })
     : rows
