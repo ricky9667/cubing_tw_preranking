@@ -64,8 +64,23 @@ const buildLayout = () => {
         <h1 class="text-3xl font-semibold text-slate-900">Taiwan Championship 2025</h1>
       </div>
       <div class="flex items-center gap-2">
-        <button id="theme-toggle" class="btn-secondary" type="button">🌙 Theme</button>
-        <button id="refresh" class="btn-primary self-start">Reload Competitors</button>
+        <a
+          href="https://github.com/ricky9667/cubing_tw_preranking"
+          class="icon-button"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span aria-hidden="true">🔗</span>
+          <span class="sr-only">Open repository</span>
+        </a>
+        <button id="theme-toggle" class="icon-button" type="button">
+          <span data-icon aria-hidden="true">🌙</span>
+          <span class="sr-only">Toggle theme</span>
+        </button>
+        <button id="refresh" class="icon-button self-start" type="button">
+          <span aria-hidden="true">↻</span>
+          <span class="sr-only">Reload competitors</span>
+        </button>
       </div>
     </header>
     <section class="card p-6 space-y-5">
@@ -444,7 +459,10 @@ const applyTheme = (mode) => {
   const toggle = document.querySelector('#theme-toggle')
   if (toggle) {
     const isDark = resolved === 'dark'
-    toggle.textContent = isDark ? '☀️ Light' : '🌙 Dark'
+    const icon = toggle.querySelector('[data-icon]')
+    if (icon) {
+      icon.textContent = isDark ? '☀️' : '🌙'
+    }
     toggle.setAttribute('aria-label', `Switch to ${isDark ? 'light' : 'dark'} mode`)
   }
 }

@@ -64,6 +64,10 @@
     @apply inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-800 shadow-sm bg-white transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
   }
 
+  .icon-button {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/80 text-slate-700 shadow-sm backdrop-blur border-0 transition hover:-translate-y-0.5 hover:shadow-md hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500;
+  }
+
   .status {
     @apply font-semibold text-sm;
   }
@@ -79,6 +83,10 @@
 
     :root:not([data-theme='light']) .btn-secondary {
       @apply bg-slate-800 border-slate-600 text-slate-100 shadow-slate-900/40 hover:shadow-slate-900/60;
+    }
+
+    :root:not([data-theme='light']) .icon-button {
+      @apply bg-slate-800/70 text-slate-100 hover:bg-slate-800;
     }
 
     :root:not([data-theme='light']) #table {
@@ -152,6 +160,10 @@
 
   :root[data-theme='dark'] .btn-secondary {
     @apply bg-slate-800 border-slate-600 text-slate-100 shadow-slate-900/40 hover:shadow-slate-900/60;
+  }
+
+  :root[data-theme='dark'] .icon-button {
+    @apply bg-slate-800/70 text-slate-100 hover:bg-slate-800;
   }
 
   :root[data-theme='dark'] #table {
