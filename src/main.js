@@ -172,7 +172,24 @@ const renderTable = (rows) => {
 
   const formatTime = (value, eventCode, { isAverage = false } = {}) => {
     if (!Number.isFinite(value) || value <= 0) return '—'
-    if (eventCode === '333mbf') return String(value)
+    if (eventCode === '333mbf') {
+      const s = String(value).padStart(9, "0");
+
+      const DD = s.slice(0, 2);
+      const TTTTT = s.slice(2, 7);
+      const MM = s.slice(7);
+
+      let difference = 99 - DD
+      let timeInSeconds = parseInt(TTTTT)
+      let missed = parseInt(MM)
+      let solved = difference + missed
+      let attempted = solved + missed
+
+      const minutes = Math.floor(timeInSeconds / 60)
+      const seconds = timeInSeconds % 60
+
+      return `${solved}/${attempted} ${minutes}:${String(seconds).padStart(2, '0')}`
+    }
     if (eventCode === '333fm') {
       if (isAverage) {
         const moves = value >= 100 ? value / 100 : value
