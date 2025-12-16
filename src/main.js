@@ -28,6 +28,9 @@ const eventNameToCode = {
   '5x5x5 Blindfolded': '555bf',
   '3x3x3 Multi-Blind': '333mbf',
 }
+const eventCodeToName = Object.fromEntries(
+  Object.entries(eventNameToCode).map(([name, code]) => [code, name])
+)
 
 const eventCodes = [
   '333',
@@ -390,6 +393,7 @@ const fetchRankingForCompetitor = async (wcaId, eventCode) => {
 const loadRanking = async () => {
   const select = document.querySelector('#event-select')
   const eventCode = select?.value
+  const eventName = eventCodeToName[eventCode] || eventCode
   if (!eventCode) {
     setStatus('Select an event first.', 'error')
     return
@@ -409,7 +413,7 @@ const loadRanking = async () => {
     return
   }
 
-  setStatus(`Loading pre-ranking for ${eventCode}…`, 'info')
+  setStatus(`Loading pre-ranking for ${eventName}…`, 'info')
   currentRankingEvent = eventCode
 
   const concurrency = 8
@@ -431,7 +435,7 @@ const loadRanking = async () => {
   rankingMap = new Map(results.map((r) => [r.wcaId, r]))
   renderTable(attendingCompetitiors)
   setStatus(
-    `Loaded pre-ranking for ${eventCode}.`,
+    `Loaded pre-ranking for ${eventName}.`,
     'success'
   )
 }
