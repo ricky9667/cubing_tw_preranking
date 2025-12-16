@@ -112,7 +112,7 @@ const parseCompetitors = (htmlText) => {
       const events = Array.from(cells)
         .slice(5)
         .reduce((list, cell, index) => {
-          if (cell.textContent.trim()) list.push(eventCodes[index])
+          if (cell.textContent.trim() !== "-") list.push(eventCodes[index])
           return list
         }, [])
 
@@ -368,12 +368,12 @@ const loadRanking = async () => {
     return
   }
 
-  const eligible = competitorsCache.filter((c) => c.events.includes(eventCode))
-  if (!eligible.length) {
+  const attendingCompetitiors = competitorsCache.filter((c) => c.events.includes(eventCode))
+  if (!attendingCompetitiors.length) {
     setStatus('No competitors registered for that event.', 'info')
     rankingMap = new Map()
     currentRankingEvent = eventCode
-    renderTable(competitorsCache)
+    renderTable(attendingCompetitiors)
     return
   }
 
@@ -384,9 +384,9 @@ const loadRanking = async () => {
   let index = 0
   const results = []
   const workers = Array.from({ length: concurrency }, async () => {
-    while (index < eligible.length) {
+    while (index < attendingCompetitiors.length) {
       const currentIndex = index++
-      const competitor = eligible[currentIndex]
+      const competitor = attendingCompetitiors[currentIndex]
       const result = await fetchRankingForCompetitor(
         competitor.wcaId,
         eventCode
@@ -397,7 +397,7 @@ const loadRanking = async () => {
   await Promise.all(workers)
 
   rankingMap = new Map(results.map((r) => [r.wcaId, r]))
-  renderTable(competitorsCache)
+  renderTable(attendingCompetitiors)
   setStatus(
     `Loaded pre-ranking for ${eventCode}.`,
     'success'
